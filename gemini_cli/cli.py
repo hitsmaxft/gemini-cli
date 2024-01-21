@@ -1,5 +1,6 @@
 import argparse
 import google.generativeai as genai
+import logging
 import os 
 import sys
 import toml
@@ -30,18 +31,46 @@ safety_settings = [
     },
 ]
 
-def stream_generate_content(prompt: str, token: str, config: Dict[str, Any]):
+LOG = logging.getLogger("gemini-cli")
+
+def stream_generate_chat(prompt: str, token: str, generation_config: Dict[str, Any], config, context):
+    if not config:
+        config = {}
+
+    # 配置 token
+    genai.configure(api_key=token)
+    model = genai.GenerativeModel('gemini-pro')
+
+    if not context:
+        context = "";
+
+    content = "Context: {context}\nRole: User\nContent: {prompt}\nAnswer: ".format(context = context, prompt = prompt)
+
+    response = model.generate_content (
+            content,
+            stream = True,
+            safety_settings = safety_settings,
+            generation_config = generation_config
+            )
+
+    for part in response:
+        print(part.text, end='', flush = True)
+
+def stream_generate_content(prompt: str, token: str, generation_config: Dict[str, Any], config):
+    if not config:
+        config = {}
+
     # 配置 token
     genai.configure(api_key=token)
 
     model = genai.GenerativeModel('gemini-pro')
 
     response = model.generate_content(
-        prompt,
-        stream = True,
-        safety_settings = safety_settings,
-        generation_config = config,
-    )
+            prompt,
+            stream = True,
+            safety_settings = safety_settings,
+            generation_config = generation_config,
+            )
 
     for part in response:
         print(part.text, end='', flush = True)
@@ -61,7 +90,7 @@ def main():
     parser = argparse.ArgumentParser(description="Stream responses from Google Generative AI.")
     parser.add_argument('prompt', type=str, help="Prompt to send to the model", nargs='?', default=None)
     parser.add_argument('-t', '--token', type=str, help="API token for authentication", default=None)
-    parser.add_argument('-s', '--context', type=str, help="context(system) prompt, optional", default=None)
+    parser.add_argument('-s', '--context', type=str, help="context(context) prompt, optional", default=None)
     parser.add_argument('-f', '--config-file', type=str, help="Path to the config file", default='~/.gemini-cli.toml')
     args = parser.parse_args()
 
@@ -82,10 +111,7 @@ def main():
     token = args.token if args.token is not None else config.get("token", None)
     context =  args.context if args.context is not None else config.get("context", None)
     if token:
-        if context:
-            prompt = f"Context: {context}\n{prompt}"
-
-        stream_generate_content(prompt, token, config.get("generation_config", None))
+        stream_generate_chat(prompt, token, config.get("generation_config", None), config=config, context = context)
     else:
         print("Token not found. Please provide a token via --token argument or ensure your token is correctly set in ~/.gemini-cli.toml.")
 
