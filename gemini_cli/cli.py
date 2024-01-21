@@ -31,7 +31,7 @@ safety_settings = [
     },
 ]
 
-LOG = logging.getLogger("gemini-cli")
+_logger = logging.getLogger("gemini-cli")
 
 def stream_generate_chat(prompt: str, token: str, generation_config: Dict[str, Any], config, context):
     if not config:
@@ -42,9 +42,11 @@ def stream_generate_chat(prompt: str, token: str, generation_config: Dict[str, A
     model = genai.GenerativeModel('gemini-pro')
 
     if not context:
-        context = "";
+        context = "You are a helpful assistant.";
 
-    content = "Context: {context}\nRole: User\nContent: {prompt}\nAnswer: ".format(context = context, prompt = prompt)
+    content = "Context: {context}\nUser: {prompt}\nBot: ".format(context = context, prompt = prompt)
+
+    _logger.info("final prompt \n```\n" + content + "\n```")
 
     response = model.generate_content (
             content,
@@ -92,9 +94,14 @@ def main():
     parser.add_argument('-t', '--token', type=str, help="API token for authentication", default=None)
     parser.add_argument('-s', '--context', type=str, help="context(context) prompt, optional", default=None)
     parser.add_argument('-f', '--config-file', type=str, help="Path to the config file", default='~/.config/gemini-cli.toml')
+    parser.add_argument('-v', '--verbose', action='store_true',  help='Prompt string for the whale API')
+
     args = parser.parse_args()
 
     # 读取 prompt，支持从命令行参数或 stdin
+    if args.verbose:
+        logging.basicConfig(level=logging.INFO)
+        _logger.setLevel(level=logging.INFO)
     if args.prompt is not False:
         prompt = args.prompt if args.prompt is not True else sys.stdin.read().strip()
         if not prompt:
