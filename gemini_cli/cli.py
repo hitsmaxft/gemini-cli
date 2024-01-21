@@ -91,7 +91,7 @@ def main():
     parser.add_argument('prompt', type=str, help="Prompt to send to the model", nargs='?', default=None)
     parser.add_argument('-t', '--token', type=str, help="API token for authentication", default=None)
     parser.add_argument('-s', '--context', type=str, help="context(context) prompt, optional", default=None)
-    parser.add_argument('-f', '--config-file', type=str, help="Path to the config file", default='~/.gemini-cli.toml')
+    parser.add_argument('-f', '--config-file', type=str, help="Path to the config file", default='~/.config/gemini-cli.toml')
     args = parser.parse_args()
 
     # 读取 prompt，支持从命令行参数或 stdin
@@ -113,7 +113,7 @@ def main():
     if token:
         stream_generate_chat(prompt, token, config.get("generation_config", None), config=config, context = context)
     else:
-        print("Token not found. Please provide a token via --token argument or ensure your token is correctly set in ~/.gemini-cli.toml.")
+        print("Token not found. Please provide a token via --token argument or ensure your token is correctly set in ~/.config/gemini-cli.toml.")
 
 if __name__ == "__main__":
     main()
