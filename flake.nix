@@ -11,20 +11,21 @@
   };
 
   outputs = { self, nixpkgs, flake-utils, poetry2nix }:
-  flake-utils.lib.eachDefaultSystem (system:
-  let
-    # see https://github.com/nix-community/poetry2nix/tree/master#api for more functions and examples.
-    pkgs = nixpkgs.legacyPackages.${system};
-    name = "gemini-cli";
-  in
-  {
-    packages.default = pkgs.callPackage ./default.nix {
-      poetry2nix = poetry2nix.lib.mkPoetry2Nix { inherit pkgs; };
-    };
+    flake-utils.lib.eachDefaultSystem (system:
+      let
+        # see https://github.com/nix-community/poetry2nix/tree/master#api for more functions and examples.
+        pkgs = nixpkgs.legacyPackages.${system};
+        name = "gemini-cli";
+      in
+      {
+        packages.default = pkgs.callPackage ./default.nix {
+          poetry2nix = poetry2nix.lib.mkPoetry2Nix { inherit pkgs; };
+        };
 
-    devShells.default = pkgs.mkShell {
-      inputsFrom = [ self.packages.${system}.${name}];
-      packages = [ pkgs.poetry ];
-    };
-  });
+        formatter = pkgs.nixpkgs-fmt;
+        devShells.default = pkgs.mkShell {
+          inputsFrom = [ self.packages.${system}.${name} ];
+          packages = [ pkgs.poetry ];
+        };
+      });
 }
