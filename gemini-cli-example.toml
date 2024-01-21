@@ -1,6 +1,9 @@
 token=PUT_TOUR_TOKEN_HERE
 
 [generation_config]
-top_k=1
-top_p=0.9
+top_p=0.95
+top_k=20
+candidate_count=1
+max_output_tokens=2000
+stop_sequences=["STOP!"]
 
