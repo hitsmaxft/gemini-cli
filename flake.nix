@@ -17,11 +17,13 @@
     pkgs = nixpkgs.legacyPackages.${system};
     p2n = poetry2nix.lib.mkPoetry2Nix { inherit pkgs; };
     inherit (p2n) mkPoetryApplication;
+    name = "gemini-cli";
   in
   {
     packages = {
-      gemini-cli = mkPoetryApplication { 
+      ${name} = mkPoetryApplication { 
         projectDir = self;
+        python = pkgs.python311;
         overrides = p2n.defaultPoetryOverrides.extend
         (self: super: {
           inherit (pkgs.python311Packages) grpcio;
@@ -37,11 +39,11 @@
             );
           });
         };
-        default = self.packages.${system}.gemini-cli;
+        default = self.packages.${system}.${name};
       };
 
       devShells.default = pkgs.mkShell {
-        inputsFrom = [ self.packages.${system}.gemini-cli];
+        inputsFrom = [ self.packages.${system}.${name}];
         packages = [ pkgs.poetry ];
       };
     });
