@@ -1,0 +1,6 @@
+token=PUT_TOUR_TOKEN_HERE
+
+[generation_config]
+top_k=1
+top_p=0.9
+
