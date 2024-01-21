@@ -61,14 +61,17 @@ def main():
     parser = argparse.ArgumentParser(description="Stream responses from Google Generative AI.")
     parser.add_argument('prompt', type=str, help="Prompt to send to the model", nargs='?', default=None)
     parser.add_argument('-t', '--token', type=str, help="API token for authentication", default=None)
+    parser.add_argument('-s', '--context', type=str, help="context(system) prompt, optional", default=None)
     parser.add_argument('-f', '--config-file', type=str, help="Path to the config file", default='~/.gemini-cli.toml')
     args = parser.parse_args()
-
-
 
     # 读取 prompt，支持从命令行参数或 stdin
     if args.prompt is not False:
         prompt = args.prompt if args.prompt is not True else sys.stdin.read().strip()
+        if not prompt:
+            print("No prompt provided. Please provide a prompt to generate content.")
+            parser.print_help()
+            sys.exit(1)
     else:
         parser.print_help()
         return
@@ -77,7 +80,11 @@ def main():
 
     # 读取 token，支持从命令行参数或配置文件
     token = args.token if args.token is not None else config.get("token", None)
+    context =  args.context if args.context is not None else config.get("context", None)
     if token:
+        if context:
+            prompt = f"Context: {context}\n{prompt}"
+
         stream_generate_content(prompt, token, config.get("generation_config", None))
     else:
         print("Token not found. Please provide a token via --token argument or ensure your token is correctly set in ~/.gemini-cli.toml.")
