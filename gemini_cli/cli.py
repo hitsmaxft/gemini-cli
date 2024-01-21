@@ -15,7 +15,7 @@ def stream_generate_content(prompt, token):
         stream = True,
     )
     for part in response:
-        print(part.text, end='', flush=True)
+        print(part.text, end='', flush = True)
 
 def read_token_from_config():
     config_path = os.path.expanduser('~/.gemini.toml')
