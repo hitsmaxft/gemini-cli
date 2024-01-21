@@ -15,3 +15,6 @@ toml = "^0.10.2"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+gemini-cli =  "gemini_cli:main"

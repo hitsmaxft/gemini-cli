@@ -3,6 +3,31 @@ import google.generativeai as genai
 import os 
 import sys
 import toml
+import json
+from google.generativeai.types.generation_types import GenerateContentResponse
+
+safety_settings = [
+    {
+        "category": "HARM_CATEGORY_DANGEROUS",
+        "threshold": "BLOCK_NONE",
+    },
+    {
+        "category": "HARM_CATEGORY_HARASSMENT",
+        "threshold": "BLOCK_NONE",
+    },
+    {
+        "category": "HARM_CATEGORY_HATE_SPEECH",
+        "threshold": "BLOCK_NONE",
+    },
+    {
+        "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+        "threshold": "BLOCK_NONE",
+    },
+    {
+        "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+        "threshold": "BLOCK_NONE",
+    },
+]
 
 def stream_generate_content(prompt, token):
     # 配置 token
@@ -13,6 +38,7 @@ def stream_generate_content(prompt, token):
     response = model.generate_content(
         prompt,
         stream = True,
+        safety_settings = safety_settings,
     )
     for part in response:
         print(part.text, end='', flush = True)

@@ -28,7 +28,7 @@
         (self: super: {
           inherit (pkgs.python311Packages) grpcio;
           inherit (pkgs.python311Packages) grpcio-status;
-          inherit (pkgs.python311Packages)  googleapis-common-protos;
+          inherit (pkgs.python311Packages) googleapis-common-protos;
           inherit (pkgs.python311Packages) protobuf;
 
           google-ai-generativelanguage = super.google-ai-generativelanguage.overridePythonAttrs
