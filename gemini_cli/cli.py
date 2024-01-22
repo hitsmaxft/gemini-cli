@@ -8,6 +8,8 @@ import json
 from typing import (Dict,Any)
 from google.generativeai.types.generation_types import (GenerateContentResponse)
 
+DEFAULT_CONFIG_PATH: str = "~/.config/gemini-cli.toml"
+
 safety_settings = [
     {
         "category": "HARM_CATEGORY_DANGEROUS",
@@ -94,7 +96,7 @@ def main():
     parser.add_argument('-t', '--token', type=str, help="API token for authentication", default=None)
     parser.add_argument('-s', '--context', type=str, help="context(context) prompt, optional", default=None)
     parser.add_argument('--system', dest='context', help='Alias for --context.')
-    parser.add_argument('-f', '--config-file', type=str, help="Path to the config file", default='~/.config/gemini-cli.toml')
+    parser.add_argument('-f', '--config-file', type=str, help=f"Path to the config file, use {DEFAULT_CONFIG_PATH} by default.", default='~/.config/gemini-cli.toml')
     parser.add_argument('-v', '--verbose', action='store_true',  help='Prompt string for the whale API')
 
     parser.add_argument('-n', '--limit',  type=int,  help='limit prompt length')
@@ -123,7 +125,8 @@ def main():
     if token:
         stream_generate_chat(prompt, token, config.get("generation_config", None), config=config, context = context)
     else:
-        print("Token not found. Please provide a token via --token argument or ensure your token is correctly set in ~/.config/gemini-cli.toml.")
+        print(f"Token not found. Please provide a token via --token argument or ensure your token is correctly set in {DEFAULT_CONFIG_PATH}.")
+        sys.exit(-1)
 
 if __name__ == "__main__":
     main()
