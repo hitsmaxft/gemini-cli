@@ -26,13 +26,10 @@
         devShells.default = pkgs.mkShell {
           #inputsFrom = [ self.packages.${system}.${name} ];
           packages = [ pkgs.poetry pkgs.python311 ];
-            buildInputs = with pkgs; [
-              gcc
-              glibc
-            ];
-            shellHook = ''
-                  LD_LIBRARY_PATH=${pkgs.stdenv.cc.cc.lib}/lib/:/run/opengl-driver/lib/
-            '';
+          buildInputs = with pkgs; [];
+          LD_LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib}/lib/:/run/opengl-driver/lib/";
+          shellHook = ''
+          '';
         };
         
       });

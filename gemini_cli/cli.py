@@ -97,6 +97,8 @@ def main():
     parser.add_argument('-f', '--config-file', type=str, help="Path to the config file", default='~/.config/gemini-cli.toml')
     parser.add_argument('-v', '--verbose', action='store_true',  help='Prompt string for the whale API')
 
+    parser.add_argument('-n', '--limit',  type=int,  help='limit prompt length')
+
     args = parser.parse_args()
 
     # 读取 prompt，支持从命令行参数或 stdin
