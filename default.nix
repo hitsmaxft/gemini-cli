@@ -20,6 +20,7 @@
       toml                         
       tqdm                         
       typing-extensions            
+      rich 
       urllib3;
 
       google-ai-generativelanguage = super.google-ai-generativelanguage.overridePythonAttrs (

@@ -7,6 +7,11 @@ import toml
 import json
 from typing import (Dict,Any)
 from google.generativeai.types.generation_types import (GenerateContentResponse)
+from rich.console import Console
+from rich.markdown import Markdown
+from rich.live import Live
+
+console = Console()
 
 DEFAULT_CONFIG_PATH: str = "~/.config/gemini-cli.toml"
 
@@ -57,8 +62,30 @@ def stream_generate_chat(prompt: str, token: str, generation_config: Dict[str, A
             generation_config = generation_config
             )
 
-    for part in response:
-        print(part.text, end='', flush = True)
+    if not config.get("markdown", False):
+        _logger.info("output in markdown format")
+        if config.get('stream', False):
+            for part in response:
+                print(part.text, end='', flush = True)
+        else:
+            full_text = ''
+            for part in response:
+                full_text += part.text
+            print(full_text, end='', flush = True)
+    else:
+        if config.get('stream', False):
+            with Live("", refresh_per_second=4) as live:
+                full_text = ''
+                for part in response:
+                    full_text += part.text
+                    live.update(Markdown(full_text))
+                live.update(Markdown(full_text))
+        else:
+            full_text = ''
+            for part in response:
+                full_text += part.text
+            console.print(Markdown(full_text))
+
 
 def stream_generate_content(prompt: str, token: str, generation_config: Dict[str, Any], config):
     if not config:
@@ -98,8 +125,9 @@ def main():
     parser.add_argument('-s', '--system', dest='context', help='Alias for --context.')
     parser.add_argument('-f', '--config-file', type=str, help=f"Path to the config file, use {DEFAULT_CONFIG_PATH} by default.", default='~/.config/gemini-cli.toml')
     parser.add_argument('-v', '--verbose', action='store_true',  help='Prompt string for the whale API')
-    parser.add_argument('--stream', action='store_true',  help='stream output', default=True)
+    parser.add_argument('--stream', action='store_true',  help='stream output')
 
+    parser.add_argument('--markdown', action='store_true', help='output markdown format', default=False)
     parser.add_argument('-n', '--limit',  type=int,  help='limit prompt length')
 
     args = parser.parse_args()
@@ -120,9 +148,18 @@ def main():
 
     config = read_config(args.config_file)
 
+
     # 读取 token，支持从命令行参数或配置文件
     token = args.token if args.token is not None else config.get("token", None)
     context =  args.context if args.context is not None else config.get("context", None)
+
+    config["stream"] = args.stream
+    if args.markdown:
+        config["markdown"] = True
+
+    _logger.info(f"config is ${json.dumps(config)}")
+
+
     if token:
         stream_generate_chat(prompt, token, config.get("generation_config", None), config=config, context = context)
     else:
