@@ -94,10 +94,11 @@ def main():
     parser = argparse.ArgumentParser(description="Stream responses from Google Generative AI.")
     parser.add_argument('prompt', type=str, help="Prompt to send to the model", nargs='?', default=None)
     parser.add_argument('-t', '--token', type=str, help="API token for authentication", default=None)
-    parser.add_argument('-s', '--context', type=str, help="context(context) prompt, optional", default=None)
-    parser.add_argument('--system', dest='context', help='Alias for --context.')
+    parser.add_argument('-c', '--context', type=str, help="context(context) prompt, optional", default=None)
+    parser.add_argument('-s', '--system', dest='context', help='Alias for --context.')
     parser.add_argument('-f', '--config-file', type=str, help=f"Path to the config file, use {DEFAULT_CONFIG_PATH} by default.", default='~/.config/gemini-cli.toml')
     parser.add_argument('-v', '--verbose', action='store_true',  help='Prompt string for the whale API')
+    parser.add_argument('--stream', action='store_true',  help='stream output', default=True)
 
     parser.add_argument('-n', '--limit',  type=int,  help='limit prompt length')
 
