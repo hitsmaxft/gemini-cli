@@ -108,6 +108,7 @@ def stream_generate_content(prompt: str, token: str, generation_config: Dict[str
 
 def read_config(custom_path):
     config_path = os.path.expanduser(custom_path)
+    _logger.info(f"config path is {config_path}");
     try:
         config_data = toml.load(config_path)
         return config_data;
@@ -153,11 +154,13 @@ def main():
     token = args.token if args.token is not None else config.get("token", None)
     context =  args.context if args.context is not None else config.get("context", None)
 
-    config["stream"] = args.stream
+    if args.stream:
+        config["stream"] = True
+
     if args.markdown:
         config["markdown"] = True
 
-    _logger.info(f"config is ${json.dumps(config)}")
+    _logger.info(f"config is {json.dumps(config)}")
 
 
     if token:
