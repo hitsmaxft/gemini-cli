@@ -1,4 +1,4 @@
-from gemini_cli.cli import main
+from gemini_cli.gemini import GeminiCLI
 
 if __name__ == '__main__':
-    main()
+    GeminiCLI().run()
