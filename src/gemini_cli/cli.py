@@ -1,5 +1,4 @@
 import argparse
-import google.generativeai as genai
 import logging
 import os 
 import sys
@@ -7,7 +6,6 @@ import toml
 import json
 from typing import (Dict,Any)
 from abc import ABC, abstractmethod
-from google.generativeai.types.generation_types import (GenerateContentResponse)
 from rich.console import Console
 from rich.markdown import Markdown
 from rich.live import Live
