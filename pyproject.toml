@@ -1,10 +1,6 @@
-[project.urls]
-
-Homepage = "https://github.com/hitsmaxft/gemini-cli"
-
 [tool.poetry]
 name = "gemini-cli"
-version = "0.2.1"
+version = "0.2.4"
 description = "google gemini api for terminal (CLI)"
 authors = ["hitsmaxft <mfthits@gmail.com>"]
 license = "MIT"
