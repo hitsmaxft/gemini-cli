@@ -21,6 +21,7 @@
       tqdm                         
       typing-extensions            
       rich 
+      twine 
       urllib3;
 
       google-ai-generativelanguage = super.google-ai-generativelanguage.overridePythonAttrs (
