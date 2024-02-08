@@ -1,4 +1,5 @@
 [tool.poetry]
+name = "gemini-cli"
 version = "0.2.5"
 description = "google gemini api for terminal (CLI)"
 authors = ["hitsmaxft <mfthits@gmail.com>"]
